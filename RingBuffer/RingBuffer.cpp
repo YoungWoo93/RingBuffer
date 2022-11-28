@@ -54,15 +54,19 @@ ringBuffer::~ringBuffer() {
 	delete[] buffer;
 }
 
-size_t ringBuffer::MoveRear(size_t _size) {
+int ringBuffer::MoveRear(int _size) {
 	char* h = headPtr;
 	char* t = tailPtr;
 
-	if (_size > bufferSize - 1 - (t - h + bufferSize) % bufferSize)
-		_size = bufferSize - 1 - (t - h + bufferSize) % bufferSize;
+	//if (_size > bufferSize - 1 - (t - h + bufferSize) % bufferSize)
+	//	_size = bufferSize - 1 - (t - h + bufferSize) % bufferSize;
+	if (_size >= 0 && _size > (h - 1 - t + bufferSize) % bufferSize)
+		_size = (h - 1 - t + bufferSize) % bufferSize;
+	else if (_size < 0 && -_size > (t - h + bufferSize) % bufferSize)
+		_size = -(int)((t - h + bufferSize) % bufferSize);
 
 	intptr_t offset = reinterpret_cast<intptr_t>(t) - reinterpret_cast<intptr_t>(buffer);
-	offset = (offset + _size) % bufferSize;
+	offset = (offset + _size + bufferSize) % bufferSize;
 
 
 	//InterlockedExchange((volatile unsigned long long*)&tailPtr, (unsigned long long)buffer + offset);
@@ -70,15 +74,19 @@ size_t ringBuffer::MoveRear(size_t _size) {
 
 	return _size;
 }
-size_t ringBuffer::MoveFront(size_t _size) {
+int ringBuffer::MoveFront(int _size) {
 	char* h = headPtr;
 	char* t = tailPtr;
 
-	if (_size > (t - h + bufferSize) % bufferSize)
+	//if (_size > (t - h + bufferSize) % bufferSize)
+	//	_size = (t - h + bufferSize) % bufferSize;
+	if (_size >= 0 && _size > (t - h + bufferSize) % bufferSize)
 		_size = (t - h + bufferSize) % bufferSize;
+	else if (_size < 0 && -_size > (h - 1 - t + bufferSize) % bufferSize)
+		_size = -(int)((h - 1 - t + bufferSize) % bufferSize);
 
 	intptr_t offset = reinterpret_cast<intptr_t>(h) - reinterpret_cast<intptr_t>(buffer);
-	offset = (offset + _size) % bufferSize;
+	offset = (offset + _size + bufferSize) % bufferSize;
 
 	//InterlockedExchange((volatile unsigned long long*)&headPtr, (unsigned long long)buffer + offset);
 	headPtr = buffer + offset;
@@ -90,7 +98,9 @@ size_t ringBuffer::push(const char* _data, size_t _data_size) {
 	char* h = headPtr;
 	char* t = tailPtr;
 
-	size_t temp = (bufferSize - 1 - (t - h + bufferSize) % bufferSize);
+	//size_t temp = (bufferSize - 1 - (t - h + bufferSize) % bufferSize);
+	size_t temp = (h - 1 - t + bufferSize) % bufferSize;
+
 	if (_data_size > temp)
 		_data_size = temp;
 

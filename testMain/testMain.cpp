@@ -291,8 +291,79 @@ void multiThread_test()
 }
 
 
+
+
+
+void moveFront_moveRear_Test()
+{
+	ringBuffer test(16);
+
+	/*
+	printf("MR %d\n", test.MoveRear(3));
+	printf("MR %d\n", test.MoveRear(-100));
+	printf("MR %d\n", test.MoveRear(6));
+	printf("MR %d\n", test.MoveRear(-1));
+	printf("MR %d\n", test.MoveRear(-2));
+	printf("MR %d\n", test.MoveRear(-3));
+	printf("MR %d\n", test.MoveRear(6));
+	printf("MR %d\n", test.MoveRear(-6));
+	printf("MR %d\n", test.MoveRear(6));
+
+	printf("MF %d\n", test.MoveFront(3));
+	printf("MF %d\n", test.MoveFront(-100));
+	printf("MF %d\n", test.MoveFront(6));
+	printf("MF %d\n", test.MoveFront(-1));
+	printf("MF %d\n", test.MoveFront(-2));
+	printf("MF %d\n", test.MoveFront(-3));
+	printf("MF %d\n", test.MoveFront(6));
+	printf("MF %d\n", test.MoveFront(-6));
+	printf("MF %d\n", test.MoveFront(-1));
+	*/
+
+	int m = 15;
+	int current = 0;
+	int cycle = 0;
+	while (true)
+	{
+		printf("%d\n", cycle++);
+		test.printbuffer();
+		if (rand() % 2 == 1)
+		{
+			// move front
+			//	양수 : current감소
+			//	음수 : current증가
+
+			int size = (rand() % 2 == 1 ? rand() % m : -(rand() % m));
+			if (size > 0)
+				current = max(0, current - size);
+			else if(size < 0)
+				current = min(m, current - size);
+
+			printf("\tsize %d \t -> \t MF %d\n", size, test.MoveFront(size));
+			if (current != test.size())
+				printf("error\tcurrent : %d\ttest.size : %d\n", current, test.size());
+		}
+		else
+		{
+			// move rear
+			//	양수 : current증가
+			//	음수 : current감소
+
+			int size = (rand() % 2 == 1 ? rand() % m : -(rand() % m));
+			if (size < 0)
+				current = max(0, current + size);
+			else if(size > 0)
+				current = min(m, current + size);
+
+			printf("\tsize %d \t -> \t MR %d\n", size, test.MoveRear(size));
+			if (current != test.size())
+				printf("error\tcurrent : %d\ttest.size : %d\n", current, test.size());
+		}
+	}
+}
 void main()
 {
 	//allnight_test();
-	multiThread_test();
+	//multiThread_test();
+	moveFront_moveRear_Test();
 }

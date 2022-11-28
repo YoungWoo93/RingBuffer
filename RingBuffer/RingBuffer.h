@@ -63,8 +63,8 @@ public:
 
 
 
-	size_t MoveRear(const size_t _size);
-	size_t MoveFront(const size_t _size);
+	int MoveRear(const int _size);
+	int MoveFront(const int _size);
 
 	size_t	push(const char* _data, size_t _data_size);
 	size_t	pop(const char* _buffer, size_t _buffer_size);

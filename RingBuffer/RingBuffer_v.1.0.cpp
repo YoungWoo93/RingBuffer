@@ -2,7 +2,7 @@
 //	single thread version
 //
 
-#include "Ringbuffer.h"
+#include "RingBuffer_v.1.0.h"
 
 #include <string.h>
 #include <math.h>
