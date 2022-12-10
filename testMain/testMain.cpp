@@ -243,7 +243,7 @@ DWORD WINAPI multi_pusher(LPVOID arg)
 DWORD WINAPI multi_poper(LPVOID arg)
 {
 	unsigned long long cycle = 0;
-	unsigned char count = -1;
+	unsigned char count = 0;
 	cout << "poper run" << endl;
 
 
@@ -269,7 +269,7 @@ DWORD WINAPI multi_poper(LPVOID arg)
 
 			if (temp[i] == 0)
 				cycle++;
-			if (++count != temp[i])
+			if (count++ != temp[i])
 				cout << "error here" << endl;
 		}
 	}
@@ -364,6 +364,6 @@ void moveFront_moveRear_Test()
 void main()
 {
 	//allnight_test();
-	//multiThread_test();
-	moveFront_moveRear_Test();
+	multiThread_test();
+	//moveFront_moveRear_Test();
 }

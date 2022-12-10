@@ -95,6 +95,8 @@ int ringBuffer::MoveFront(int _size) {
 }
 
 size_t ringBuffer::push(const char* _data, size_t _data_size) {
+	pushMutex.lock();
+
 	char* h = headPtr;
 	char* t = tailPtr;
 
@@ -124,9 +126,12 @@ size_t ringBuffer::push(const char* _data, size_t _data_size) {
 	//InterlockedExchange((volatile unsigned long long*) & tailPtr, (unsigned long long)buffer + offset);
 	tailPtr = buffer + offset;
 
+	pushMutex.unlock();
 	return _data_size;
 }
 size_t ringBuffer::pop(const char* _buffer, size_t _buffer_size) {
+	popMutex.lock();
+
 	char* h = headPtr;
 	char* t = tailPtr;
 
@@ -154,9 +159,13 @@ size_t ringBuffer::pop(const char* _buffer, size_t _buffer_size) {
 	//InterlockedExchange((volatile unsigned long long*) & headPtr, (unsigned long long)buffer + offset);
 	headPtr = buffer + offset;
 
+	popMutex.unlock();
+
 	return _buffer_size;
 }
-size_t ringBuffer::front(const char* _buffer, size_t _buffer_size)  const {
+size_t ringBuffer::front(const char* _buffer, size_t _buffer_size) {
+	popMutex.lock();
+
 	char* h = headPtr;
 	char* t = tailPtr;
 
@@ -177,6 +186,8 @@ size_t ringBuffer::front(const char* _buffer, size_t _buffer_size)  const {
 		memmove(const_cast<char*>(_buffer), buffer + ((h - buffer + 1) % bufferSize), d);
 		memmove(const_cast<char*>(_buffer + d), buffer, _buffer_size - d);
 	}
+
+	popMutex.unlock();
 
 	return _buffer_size;
 }

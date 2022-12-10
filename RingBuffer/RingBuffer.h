@@ -1,9 +1,17 @@
 #pragma once
-// v.2.0
+// v.2.1
+// 
+// 2.0
 // single producer / single consumer
 //	thread safe version
 //
+//
+// 2.1
+// multi thread safe (use mutex lock)
+//
 
+#include <mutex>
+#include <thread>
 
 class ringBuffer {
 public:
@@ -68,7 +76,7 @@ public:
 
 	size_t	push(const char* _data, size_t _data_size);
 	size_t	pop(const char* _buffer, size_t _buffer_size);
-	size_t	front(const char* _buffer, size_t _buffer_size) const;
+	size_t	front(const char* _buffer, size_t _buffer_size);
 
 	size_t copy(const ringBuffer& rb);
 
@@ -87,6 +95,9 @@ private:
 
 	char* writePoint;
 	char* readPoint;
+
+	std::mutex pushMutex;
+	std::mutex popMutex;
 };
 
 
